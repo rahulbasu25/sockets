@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Sockets example</title>
+</head>
+
+<body>
+    <h1>Web Sockets 101</h1>
+    <label id="status"></label>
+    <ul id="messages"></ul>
+    <button id="close">Close Connection</button>
+</body>
+<script>
+    let socket = new WebSocket("ws://echo.websocket.org");
+    socket.onopen = function (event) {
+        console.log("Web Socket Connection Established");
+        let label = document.getElementById("status");
+        label.innerHTML = "Web Socket Connection Established";
+        socket.send("Message 1");
+        socket.send("Message 2");
+        socket.send("Message 3");
+        socket.send("Message 4");
+        socket.send("Message 5");
+        socket.send("Message 6");
+        socket.send("Message 7");
+    }
+
+    socket.onclose = function (event) {
+        console.log("Web Socket Connection Closed");
+        let label = document.getElementById("status");
+        label.innerHTML = "Web Socket Connection Closed";
+
+        // Connection closed.
+        // Firstly, check the reason.
+
+        if (event.code != 1000) {
+            // Error code 1000 means that the connection was closed normally.
+            // Try to reconnect.
+            if (!navigator.onLine) {
+                alert("You are offline. Please connect to the Internet and try again.");
+            }
+        }
+    }
+
+    socket.onmessage = function (e) {
+        let messageUL = document.getElementById("messages");
+        let li = document.createElement("li");
+        li.innerText = e.data;
+        messageUL.appendChild(li);
+    }
+
+    let closeButton = document.getElementById("close");
+    closeButton.onclick = function () {
+        if (socket.readyState === WebSocket.OPEN) {
+            socket.close();
+        }
+    }
+
+
+</script>
+
+</html>
